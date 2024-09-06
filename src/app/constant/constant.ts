@@ -10,7 +10,7 @@ export type ChatMessage = {
 }
 
 export type Mask = {
-    id : number,
+    id : string,
     avatar : string,
     name : string,
     context :  ChatMessage[],
@@ -23,5 +23,5 @@ export type Session = {
     topic : string,
     lastUpdateTime : string,
     messages : ChatMessage[],
-    Mask : Mask,   
+    // Mask : Mask,   
 }
