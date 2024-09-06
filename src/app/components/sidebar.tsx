@@ -3,7 +3,7 @@ import style from "./home.module.scss"
 import ChatGptIcon from "../icons/chatgpt.svg"
 import { useNavigate } from "react-router-dom"
 import { Path } from "../constant/constant"
-
+import ChatList from "./chat-list"
 
 export default function Sidebar() {
     const navigate = useNavigate();
@@ -30,7 +30,7 @@ export default function Sidebar() {
                 新建对话
             </button>
             <div className={style["sidebar-body"]}>
-                {/* body样式 */}
+                <ChatList />
             </div>
             {/* 用来放ChatList,由ChatSession来映射 */}
         </div>  

@@ -2,6 +2,9 @@ import { create } from "zustand";
 import { persist, PersistOptions } from "zustand/middleware";
 import { Session } from "../constant/constant";
 import { nanoid } from "nanoid";
+import { createEmptyMask } from "./mask";
+import { Mask } from "../constant/constant";
+
 
 // 定义会话状态的接口
 interface SessionState {
@@ -18,7 +21,7 @@ function createEmptySession(): Session {
     messages: [],
     lastUpdateTime: Date().toString(),
     topic: "新的对话",
-    // mask: createEmptyMask() // 如果需要 mask，可以定义
+    Mask : createEmptyMask(),  // 如果需要 mask，可以定义
   };
 }
 
@@ -29,7 +32,7 @@ export const useSessionStore = create<SessionState>()(
       sessions: [createEmptySession()],
       currentIndex: 0,
       loadSession() {
-        fetch(process.env.NEXT_PUBLIC_API_URL + "/session/all")
+        fetch("http://localhost:8080/session/all")
           .then((res) => {
             return res.json();
           })
@@ -46,7 +49,6 @@ export const useSessionStore = create<SessionState>()(
     }),
     {
       name: "chat-session", // 存储的键名
-      getStorage: () => localStorage, // 你可以定义使用的存储，默认为 localStorage
-    } as PersistOptions<SessionState>
+    } 
   )
 );

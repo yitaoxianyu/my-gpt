@@ -4,24 +4,24 @@ export enum Path{
     Chat = "/chat",
 }
 
-export type ChatMessage = {
+//interface用来描述类更加合适
+export interface ChatMessage  {
     content : string,
     date : string,
 }
 
-export type Mask = {
+export interface Mask  {
     id : string,
     avatar : string,
     name : string,
     context :  ChatMessage[],
-    onClick : () => void,
 }
 
 
-export type Session = {
+export interface Session {
     id : string,
     topic : string,
     lastUpdateTime : string,
     messages : ChatMessage[],
-    // Mask : Mask,   
+    Mask : Mask,   
 }
