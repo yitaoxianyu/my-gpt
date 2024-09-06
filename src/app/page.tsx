@@ -1,7 +1,11 @@
 
 
+import { Home } from "./components/home";
+
+
+
 export default function App() {
   return (
-    <p>Hello gpt</p>
+    <Home />
   );
 }
