@@ -4,6 +4,7 @@ import { HashRouter as Router, Routes,Route,} from "react-router-dom" //此组�
 import { Path } from "../constant/constant"
 import style from "./home.module.scss"
 import Sidebar from "./sidebar"
+import MaskPage from "./mask-page"
 
 
 export function Home() {
@@ -11,13 +12,12 @@ export function Home() {
         <Router>
             {/* 样式借用 */}
             <div className={style.container}>
-                
                     <Sidebar />
                 <div className={style["window-content"]}>
                 <Routes>
-                    <Route path={Path.Mask}>mask</Route>
+                    <Route path={Path.Mask} element = {<MaskPage />} >mask</Route>
                     <Route path={Path.Chat}>chat</Route>
-                    <Route path={Path.Home}>home</Route>
+                    <Route path={Path.Home} element = {<MaskPage />}>home</Route>
                 </Routes>
                 </div>
             </div>

@@ -22,7 +22,7 @@ function createEmptySession(): Session {
     messages: [],
     lastUpdateTime: Date().toString(),
     topic: "新的对话",
-    Mask : createEmptyMask(),  // 如果需要 mask，可以定义
+    mask : createEmptyMask(),  // 如果需要 mask，可以定义
   };
 }
 

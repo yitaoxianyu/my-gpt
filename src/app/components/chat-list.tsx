@@ -70,14 +70,6 @@ export default function ChatList(){
     },[])
 //空数组表示组件在第一次被挂载时，调用
 
-    function handleDelete(e) {
-      e.preventDefault();
-
-
-    }
-
-
-
     return(
     <div className={style["chat-list"]}>
         {sessions.map((item,i) => (
@@ -94,9 +86,9 @@ export default function ChatList(){
               
             }}
             onDelete={async () => {
-              deleteSession(i)
+              deleteSession(i);
             }}
-            Mask={item.Mask}
+            Mask={item.mask}
           />
         ))
         
