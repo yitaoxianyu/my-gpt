@@ -54,7 +54,9 @@ export const useSessionStore = create<SessionState>()(
         //请求后端删除  
         const URL = "http://localhost:8080/session/delete?sessionId=" + deletedSession.id
         fetch(URL , {method : "post"}).then(() =>{
-          set({sessions : get().sessions.splice(index,1) })
+          const newSession = get().sessions.slice();
+          newSession.splice(index,1);
+          set({sessions : newSession})
         }).catch((e) => console.log(e));
       },
     }),
