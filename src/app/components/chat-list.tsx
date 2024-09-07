@@ -3,6 +3,7 @@ import DeleteIcon from "../icons/delete.svg";
 import style from "./home.module.scss";
 import { Mask, Path } from "../constant/constant";
 import { useSessionStore } from "../store/session";
+import { useEffect } from "react";
 
 
 export function ChatItem(props : 
@@ -59,13 +60,17 @@ export function ChatItem(props :
 export default function ChatList(){
     const navigate = useNavigate();
 
-    const sessionStore = useSessionStore();
-    const session = useSessionStore((state) => state.sessions);
+    const sessions = useSessionStore((state) => state.sessions);
+    const loadSession = useSessionStore((state) => state.loadSession);
     
-    sessionStore.loadSession()
-    return( 
+    useEffect(() => {
+      loadSession();
+    },[])
+//空数组表示组件在第一次被挂载时，调用
+
+    return(
     <div className={style["chat-list"]}>
-        {session.map((item,i) => (
+        {sessions.map((item,i) => (
             <ChatItem
             title={item.topic}
             date={new Date(item.lastUpdateTime).toLocaleString()}
@@ -85,17 +90,5 @@ export default function ChatList(){
         
         }
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
     )
 }
