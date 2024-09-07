@@ -61,12 +61,22 @@ export default function ChatList(){
     const navigate = useNavigate();
 
     const sessions = useSessionStore((state) => state.sessions);
+    const currentIndex = useSessionStore((state) => state.currentIndex);
     const loadSession = useSessionStore((state) => state.loadSession);
-    
+    const deleteSession = useSessionStore((state) => state.deleteSession);
+
     useEffect(() => {
       loadSession();
     },[])
 //空数组表示组件在第一次被挂载时，调用
+
+    function handleDelete(e) {
+      e.preventDefault();
+
+
+    }
+
+
 
     return(
     <div className={style["chat-list"]}>
@@ -81,8 +91,10 @@ export default function ChatList(){
             // selected={i === selectedIndex}//该值为一个boolean属性
             onClick={() => {
               navigate(Path.Chat);
+              
             }}
             onDelete={async () => {
+              deleteSession(i)
             }}
             Mask={item.Mask}
           />

@@ -10,6 +10,7 @@ import { Mask } from "../constant/constant";
 interface SessionState {
   sessions: Session[];
   loadSession: () => void;
+  deleteSession : (index : number) => void;
   currentIndex: number;
   selectedIndex: number;
 }
@@ -31,6 +32,7 @@ export const useSessionStore = create<SessionState>()(
     (set, get) => ({
       sessions: [createEmptySession()],
       currentIndex: 0,
+      selectedIndex: 0,
       loadSession() {
         fetch("http://localhost:8080/session/all")
           .then((res) => {
@@ -45,7 +47,16 @@ export const useSessionStore = create<SessionState>()(
             console.error(e);
           });
       },
-      selectedIndex: 0,
+      deleteSession(index) {
+        // 拿到sessions数组。
+        const deletedSession = get().sessions.at(index); //查看index索引元素是否存在
+        if(! deletedSession) return ; //没有则退出
+        //请求后端删除  
+        const URL = "http://localhost:8080/session/delete?sessionId=" + deletedSession.id
+        fetch(URL , {method : "post"}).then(() =>{
+          set({sessions : get().sessions.splice(index,1) })
+        }).catch((e) => console.log(e));
+      },
     }),
     {
       name: "chat-session", // 存储的键名
