@@ -3,19 +3,15 @@ import style from "./chat.module.scss"
 import { useSessionStore } from "../store/session";
 import SendWhiteIcon from "../icons/send-white.svg"
 import IconButton from "./button";
-
-
-
-
-
-
+import { ChatMessage } from "../constant/constant";
+import { nanoid } from "nanoid"
 
 
 
 export default function Chat() {
     const [userInput,setUserInput] = useState("");
 
-    const inputRef = useRef(null);
+    const inputRef= useRef<HTMLTextAreaElement>(null);
 
     const sessions = useSessionStore((state) => state.sessions);
     const currentIndex = useSessionStore((state) => state.currentIndex);
@@ -26,8 +22,32 @@ export default function Chat() {
         setUserInput(text);
     }
     
-    function doSubmit() {
+    function doSubmit(text : string) {
+        //加一个判断是否为全空
+        if(text.trim() === "") return ;
 
+        //应当组成一个，message对象然后提交到后端
+        const nowTime = new Date().toLocaleDateString('zh-CN');
+        
+        const message : ChatMessage = {
+            id : nanoid().toString(),
+            content : text,
+            date : nowTime,
+            role : "user",
+        }
+        //封装成消息对象
+        const URL = "http://localhost:8080/session/message/add?";
+
+        fetch(URL + `sessionId=${encodeURIComponent(sessions[currentIndex].id)}`,
+        {   method : "post",
+            headers: { "Content-Type": "application/json" },
+            body : JSON.stringify(message),
+        }
+    )
+        .then((res) => {console.log(res)})
+        .catch((error) => {console.error(error)})
+
+        setUserInput("");//发送之后清空
     }
 
     return (
@@ -71,7 +91,7 @@ export default function Chat() {
                         text="发送"
                         className={style["chat-input-send"]}
                         type="primary"
-                        onClick={() => doSubmit()}
+                        onClick={() => doSubmit(userInput)}
                     />
                 </label>
             </div>

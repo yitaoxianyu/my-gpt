@@ -15,7 +15,9 @@ export default function IconButton(props : {
 ) 
 {
     return (
-        <button className= {style["icon-button"] + ` ${props.className ?? ""} clickable ${style[props.type ?? ""]}`}>
+        <button className= {style["icon-button"] + ` ${props.className ?? ""} clickable ${style[props.type ?? ""]}`}
+            onClick={props.onClick}
+        >
             {props.icon && (
             <div
               className={

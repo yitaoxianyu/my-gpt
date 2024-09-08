@@ -6,8 +6,11 @@ export enum Path{
 
 //interface用来描述类更加合适
 export interface ChatMessage  {
+    id : string,
     content : string,
     date : string,
+    role : string,
+    mask_id ?: number,
 }
 
 export interface Mask  {
