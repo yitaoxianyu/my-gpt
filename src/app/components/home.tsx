@@ -5,7 +5,7 @@ import { Path } from "../constant/constant"
 import style from "./home.module.scss"
 import Sidebar from "./sidebar"
 import MaskPage from "./mask-page"
-
+import Chat from "./chat"
 
 export function Home() {
     return (
@@ -16,7 +16,7 @@ export function Home() {
                 <div className={style["window-content"]}>
                 <Routes>
                     <Route path={Path.Mask} element = {<MaskPage />} >mask</Route>
-                    <Route path={Path.Chat}>chat</Route>
+                    <Route path={Path.Chat} element ={<Chat />}>chat</Route>
                     <Route path={Path.Home} element = {<MaskPage />}>home</Route>
                 </Routes>
                 </div>

@@ -11,6 +11,7 @@ interface SessionState {
   sessions: Session[];
   loadSession: () => void;
   deleteSession : (index : number) => void;
+  updateCurrentIndex : (index : number) => void;
   currentIndex: number;
   selectedIndex: number;
 }
@@ -58,6 +59,9 @@ export const useSessionStore = create<SessionState>()(
           newSession.splice(index,1);
           set({sessions : newSession})
         }).catch((e) => console.log(e));
+      },
+      updateCurrentIndex(index) {
+          set({currentIndex : index})
       },
     }),
     {

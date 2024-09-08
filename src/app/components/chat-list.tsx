@@ -4,6 +4,7 @@ import style from "./home.module.scss";
 import { Mask, Path } from "../constant/constant";
 import { useSessionStore } from "../store/session";
 import { useEffect } from "react";
+import { updateLayoutConfig } from "mermaid/dist/diagrams/c4/c4Db.js";
 
 
 export function ChatItem(props : 
@@ -61,10 +62,9 @@ export default function ChatList(){
     const navigate = useNavigate();
 
     const sessions = useSessionStore((state) => state.sessions);
-    const currentIndex = useSessionStore((state) => state.currentIndex);
     const loadSession = useSessionStore((state) => state.loadSession);
     const deleteSession = useSessionStore((state) => state.deleteSession);
-
+    const updateCurrentIndex = useSessionStore((state) => state.updateCurrentIndex)
     useEffect(() => {
       loadSession();
     },[])
@@ -83,7 +83,7 @@ export default function ChatList(){
             // selected={i === selectedIndex}//该值为一个boolean属性
             onClick={() => {
               navigate(Path.Chat);
-              
+              updateCurrentIndex(i);
             }}
             onDelete={async () => {
               deleteSession(i);
