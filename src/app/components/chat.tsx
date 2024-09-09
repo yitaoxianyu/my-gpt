@@ -28,15 +28,24 @@ export default function Chat() {
     //此处有一个bug,sessions列表不能为空。 
     const currentSession = sessions[currentIndex];
 
-    const loadSession = useSessionStore((state) => state.loadSession)
+    const loadSession = useSessionStore((state) => state.loadSession);
 
     const messages : ChatMessage[]  = currentSession.messages;
+
+    
 
 
     function onInput (text : string) {
         setUserInput(text);
     }
     
+
+
+    function updateMessage() {
+
+    }
+
+
     function doSubmit(text : string) {
         //加一个判断是否为全空
         if(text.trim() === "") return ;
@@ -105,11 +114,23 @@ export default function Chat() {
                                     }                                        
                                     </div>
                                     <div className={style["chat-message-item"]}>
-                                    <Markdown
-                                    // 处理对话
-                                        content={item.content}
-                                    />
+                                        <Markdown
+                                        // 处理对话
+                                            content={item.content}
+                                            loading = {! isUser}
+                                            defaultShow = {index >= messages.length - 6}
+                                        />
+
+                                    
+                                    
+                                    
+
+
+
                                     </div>
+
+
+                                   
                                     
                                     
                                 </div>
