@@ -5,17 +5,32 @@ import SendWhiteIcon from "../icons/send-white.svg"
 import IconButton from "./button";
 import { ChatMessage } from "../constant/constant";
 import { nanoid } from "nanoid"
+import { MaskAvatar } from "./mask-page";
+import { Avatar } from "./others/emoji";
+import { Navigate, useNavigate } from "react-router-dom";
+import { Path } from "../constant/constant";
+import { error } from "console";
+import { Markdown } from "./others/markdown";
 
 
 
 export default function Chat() {
     const [userInput,setUserInput] = useState("");
 
+    const navigate = useNavigate();
     const inputRef= useRef<HTMLTextAreaElement>(null);
 
+    //拿到loadSession方法
     const sessions = useSessionStore((state) => state.sessions);
     const currentIndex = useSessionStore((state) => state.currentIndex);
+
+
+    //此处有一个bug,sessions列表不能为空。 
     const currentSession = sessions[currentIndex];
+
+    const loadSession = useSessionStore((state) => state.loadSession)
+
+    const messages : ChatMessage[]  = currentSession.messages;
 
 
     function onInput (text : string) {
@@ -30,7 +45,8 @@ export default function Chat() {
         const nowTime = new Date().toLocaleDateString('zh-CN');
         
         const message : ChatMessage = {
-            id : nanoid().toString(),
+            //id前缀，区分属于哪个对话。
+            id : `${currentSession.topic}-${nanoid().toString()}`,
             content : text,
             date : nowTime,
             role : "user",
@@ -38,9 +54,10 @@ export default function Chat() {
         //封装成消息对象
         const URL = "http://localhost:8080/session/message/add?";
 
-        fetch(URL + `sessionId=${encodeURIComponent(sessions[currentIndex].id)}`,
+        fetch(URL + `sessionId=${encodeURIComponent(currentSession.id)}`,
         {   method : "post",
             headers: { "Content-Type": "application/json" },
+            //放到请求体中，后端要在对应参数加入相应的注解。
             body : JSON.stringify(message),
         }
     )
@@ -48,6 +65,9 @@ export default function Chat() {
         .catch((error) => {console.error(error)})
 
         setUserInput("");//发送之后清空
+
+        loadSession();
+
     }
 
     return (
@@ -65,6 +85,44 @@ export default function Chat() {
                     </div>
                 </div>
         </div >
+
+        {/* 为对话框部分 */}
+
+        {messages.map((item,index) =>{
+             const isUser = item.role === "user";
+
+            return (               
+                <Fragment key={item.id}>
+                    <div className={isUser ? style["chat-message-user"] : style["chat-message"]}>
+                         <div className = {style["chat-message-container"]}> 
+                            <div className = {style["chat-message-header"]}>
+                                <div className = {style["chat-message-avatar"]}>
+                                    <div>
+                                    {isUser ?
+                                        (<Avatar avatar ="1f603"/>)
+                                     :
+                                        (<MaskAvatar  avatar = {currentSession.mask.avatar}/>)
+                                    }                                        
+                                    </div>
+                                    <div className={style["chat-message-item"]}>
+                                        
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                </Fragment>
+            )
+        })
+        }
+
+
+
+
+
+
 
         <div className={style["chat-input-panel"]}>
                 <label

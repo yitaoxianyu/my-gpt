@@ -49,6 +49,9 @@ export const useSessionStore = create<SessionState>()(
           });
       },
       deleteSession(index) {
+        //判断是否只有一个
+        if(index == get().currentIndex) set({currentIndex : 0});
+
         // 拿到sessions数组。
         const deletedSession = get().sessions.at(index); //查看index索引元素是否存在
         if(! deletedSession) return ; //没有则退出
@@ -57,7 +60,8 @@ export const useSessionStore = create<SessionState>()(
         fetch(URL , {method : "post"}).then(() =>{
           const newSession = get().sessions.slice();
           newSession.splice(index,1);
-          set({sessions : newSession})
+          set({sessions : newSession});
+
         }).catch((e) => console.log(e));
       },
       updateCurrentIndex(index) {

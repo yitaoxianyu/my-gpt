@@ -5,7 +5,7 @@ import { Mask, Path } from "../constant/constant";
 import { useSessionStore } from "../store/session";
 import { useEffect } from "react";
 import { updateLayoutConfig } from "mermaid/dist/diagrams/c4/c4Db.js";
-
+import { Session } from "../constant/constant";
 
 export function ChatItem(props : 
     {   
@@ -82,6 +82,8 @@ export default function ChatList(){
             index={i}
             // selected={i === selectedIndex}//该值为一个boolean属性
             onClick={() => {
+              const emptySessions : Session[] = [];
+              if(sessions == emptySessions ) return ;
               navigate(Path.Chat);
               updateCurrentIndex(i);
             }}

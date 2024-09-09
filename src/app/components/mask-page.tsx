@@ -35,6 +35,8 @@ export function MaskItem(props : {
 //映射成面具页面
 
 export default function MaskPage() {
+    //当点击新建对话时，MaskPage组件会重新加载，同时向服务器请求所有对话。
+    
     const navigate = useNavigate();
     
     
