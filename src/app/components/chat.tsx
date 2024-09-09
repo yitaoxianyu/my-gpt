@@ -105,7 +105,10 @@ export default function Chat() {
                                     }                                        
                                     </div>
                                     <div className={style["chat-message-item"]}>
-                                        
+                                    <Markdown
+                                    // 处理对话
+                                        content={item.content}
+                                    />
                                     </div>
                                     
                                     

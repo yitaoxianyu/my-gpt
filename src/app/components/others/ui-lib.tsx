@@ -1,15 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import styles from "./ui-lib.module.scss";
-import LoadingIcon from "../icons/three-dots.svg";
-import CloseIcon from "../icons/close.svg";
+import LoadingIcon from "../../icons/three-dots.svg";
+import CloseIcon from "../../icons/close.svg";
 
-import MaxIcon from "../icons/max.svg";
-import MinIcon from "../icons/min.svg";
+import MaxIcon from "../../icons/max.svg";
+import MinIcon from "../../icons/min.svg";
 
 import { createRoot } from "react-dom/client";
 import React, { HTMLProps, useEffect, useState } from "react";
 
-import Locale from "../locales";
 
 export function Popover(props: {
   children: JSX.Element;
@@ -179,7 +178,7 @@ export function showModal(props: ModalProps) {
 
 export function showImageModal(img: string) {
   showModal({
-    title: Locale.Export.Image.Modal,
+    title: "长按或右键保存图片",
     children: (
       <div>
         <img

@@ -6,13 +6,13 @@ import RehypeKatex from "rehype-katex";
 import RemarkGfm from "remark-gfm";
 import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect, useMemo } from "react";
-// import { copyToClipboard } from "../utils";
+import { copyToClipboard } from "../../utils";
 import mermaid from "mermaid";
 
-import LoadingIcon from "../icons/three-dots.svg";
+import LoadingIcon from "../../icons/three-dots.svg";
 import React from "react";
 import { useDebouncedCallback } from "use-debounce";
-// import { showImageModal } from "./ui-lib";
+import { showImageModal } from "./ui-lib";
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
