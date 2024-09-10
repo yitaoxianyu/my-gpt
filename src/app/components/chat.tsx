@@ -32,6 +32,15 @@ export default function Chat() {
     //此处有一个bug,sessions列表不能为空。 
     const currentSession = sessions[currentIndex];
 
+    const options : Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      };
+
     //这样会当组件被挂载是，这个函数才会被调用。
     // 当你刷新页面时，React 会重新挂载 Chat 组件。在这个过程中，会发生以下几件事情：
 
@@ -59,19 +68,54 @@ export default function Chat() {
     }
     
 
+    async function fetchDataAndUpdate(text : string) {
+
+        const requestBody = {
+            model : "gpt-4o-mini",
+            messages : [{role : "user",content : text}],
+            temperature : 0.7,
+        }
+    
+
+        try {
+          // 发起 fetch 请求并等待响应
+          const response = await fetch('https://api.example.com/data' , 
+            {
+                method : "post",
+                headers : {'Content-Type' : "application/json",
+                        'Authorization' : "Bearer sk-izYEV1sPUZuB1BugBb0dD6F844Fe4f5a905258906253009d"},
+                body : JSON.stringify(requestBody),
+                mode : "cors",
+            }
+          );
+          
+          // 等待响应体的解析
+          const data = await response.json();
+          
+          const nowTime = new Date().toLocaleString('zh-CN', options);
+
+          const botMessage : ChatMessage = {
+            id : `${currentSession.topic}-${nanoid().toString()}`,
+            content : data.choices[0].message.content,
+            date : nowTime,
+            role : data.choices[0].message.content,
+          }
+          
+          updateMessage(messages.concat([botMessage]));
+
+        } catch (error) {
+          console.error('请求失败:', error);
+        }
+      }
+      
+
+
     function doSubmit(text : string) {
         //加一个判断是否为全空
         if(text.trim() === "") return ;
 
         //应当组成一个，message对象然后提交到后端
-        const options : Intl.DateTimeFormatOptions = {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          };
+        
             
         const nowTime = new Date().toLocaleString('zh-CN', options);
         
@@ -98,6 +142,11 @@ export default function Chat() {
         setUserInput("");//发送之后清空
 
         updateMessage(messages.concat([message]));
+
+
+        //之后请求给api
+        fetchDataAndUpdate(text);
+      
 
 
     }
@@ -193,6 +242,7 @@ export default function Chat() {
                         style={{
                             fontSize: 14,
                         }}
+                        rows={2}
                     />
                     <IconButton
                         icon={<SendWhiteIcon />}
