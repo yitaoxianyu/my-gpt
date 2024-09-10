@@ -88,6 +88,10 @@ export default function ChatList(){
               updateCurrentIndex(i);
             }}
             onDelete={async () => {
+              if (sessions.length == 1){
+                alert("无法清空列表！");
+                return ;
+              }
               deleteSession(i);
             }}
             Mask={item.mask}

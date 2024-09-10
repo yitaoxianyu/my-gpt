@@ -9,7 +9,7 @@ export interface ChatMessage  {
     id : string,
     content : string,
     date : string,
-    role : string,
+    role? : string,
     mask_id ?: number,
 }
 
