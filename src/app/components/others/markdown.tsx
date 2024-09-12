@@ -100,6 +100,7 @@ export function PreCode(props: { children: any }) {
 }
 
 function escapeDollarNumber(text: string) {
+  if (!text) return "";
   let escapedText = "";
 
   for (let i = 0; i < text.length; i += 1) {

@@ -42,7 +42,11 @@ export const useSessionStore = create<SessionState>()(
           .then((sessions: []) => {
             if (sessions.length > 0) {
               set((state) => ({ sessions: sessions }));
+              for (const session of sessions ){
+                console.log(session);
+              }
             }
+
           })
           .catch((e) => {
             console.error(e);

@@ -26,6 +26,9 @@ export default function Chat() {
     const sessions = useSessionStore((state) => state.sessions);
     const currentIndex = useSessionStore((state) => state.currentIndex);
     const loadSession = useSessionStore((state) => state.loadSession);
+
+
+    //用户打开聊天框，之后才会加载这个message
     const [messages,updateMessage] = useMessageStore((state) => [state.messages,state.updateMessage]);
 
 
@@ -68,49 +71,73 @@ export default function Chat() {
     }
     
 
-    async function fetchDataAndUpdate(text : string) {
-
+    async function fetchDataAndUpdate(text: string) {
         const requestBody = {
-            model : "gpt-4o-mini",
-            messages : [{role : "user",content : text}],
-            temperature : 0.7,
-        }
-    
-
+          model: "gpt-4o-mini",
+          messages: [{ role: "user", content: text }],
+          temperature: 0.7,
+        };
+      
         try {
-          // 发起 fetch 请求并等待响应
-          const response = await fetch('https://api.example.com/data' , 
-            {
-                method : "post",
-                headers : {'Content-Type' : "application/json",
-                        'Authorization' : "Bearer sk-izYEV1sPUZuB1BugBb0dD6F844Fe4f5a905258906253009d"},
-                body : JSON.stringify(requestBody),
-                mode : "cors",
-            }
-          );
-          
-          // 等待响应体的解析
+          const response = await fetch('https://api.bianxie.ai/v1/chat/completions', {
+            method: "post",
+            headers: {
+              'Content-Type': "application/json",
+              'Authorization': "Bearer sk-izYEV1sPUZuB1BugBb0dD6F844Fe4f5a905258906253009d"
+            },
+            body: JSON.stringify(requestBody),
+            mode: "cors",
+          });
+      
+          // 检查响应状态
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+      
           const data = await response.json();
           
-          const nowTime = new Date().toLocaleString('zh-CN', options);
-
-          const botMessage : ChatMessage = {
-            id : `${currentSession.topic}-${nanoid().toString()}`,
-            content : data.choices[0].message.content,
-            date : nowTime,
-            role : data.choices[0].message.content,
+          const content = data.choices?.[0]?.message?.content;
+          if (!content) {
+            console.error('响应数据格式不正确或内容为空');
+            return;
           }
-          
-          updateMessage(messages.concat([botMessage]));
+      
+          const nowTime = new Date().toLocaleString('zh-CN', options);
+      
+          const botMessage: ChatMessage = {
+            id: `${currentSession.topic}-${nanoid().toString()}`,
+            content: content,
+            date: nowTime,
+            role: "assistant", // 确保角色正确
+          };
+      
 
+        fetch("http://localhost:8080/session/message/add?" + `sessionId=${encodeURIComponent(currentSession.id)}`,
+        {   method : "post",
+            headers: { "Content-Type": "application/json" },
+            //放到请求体中，后端要在对应参数加入相应的注解。
+            body : JSON.stringify(botMessage),
+        }
+    )
+        .then((res) => {console.log(res)})
+        .catch((error) => {console.error(error)})
+
+
+          // 使用函数式更新,如果不用函数式更新的化，用户发送的信息被更新到messages中后，请求gpt中进行状态设置的messages并没有被更新。
+          updateMessage([botMessage]);
+          sortByDate(currentSession.messages);
+      
         } catch (error) {
           console.error('请求失败:', error);
         }
+
+        
+
       }
       
 
 
-    function doSubmit(text : string) {
+    async function doSubmit(text : string) {
         //加一个判断是否为全空
         if(text.trim() === "") return ;
 
@@ -141,19 +168,19 @@ export default function Chat() {
 
         setUserInput("");//发送之后清空
 
-        updateMessage(messages.concat([message]));
+        updateMessage([message]);
+        sortByDate(currentSession.messages);
 
+        console.log(messages);
 
-        //之后请求给api
         fetchDataAndUpdate(text);
-      
 
-
+        
     }
 
     return (
     <div className={style.chat} key={currentSession.id}>
-        <div className={`window-header`} data-tauri-drag-region>
+        <div className={`window-header`} >
 
                 <div className={`window-header-title ${style["chat-body-title"]}`}>
                     <div
@@ -171,8 +198,10 @@ export default function Chat() {
         <div className={style["chat-body"]} ref={scrollRef}>
         {/* 注意这里必须要给面具赋值，如果想创建空白对话则赋值为0 */}
         {messages.map((item,index) =>{
+
              const isUser = (item.role === "user");
              const isContext = item.mask_id ?? 0;
+             console.log(isContext);
             return (               
                 <Fragment key={item.id}>
                     <div className={isUser ? style["chat-message-user"] : style["chat-message"]}>
@@ -205,7 +234,7 @@ export default function Chat() {
                                     {/* 这里用来判断是否是提示词 */}
                                     {!! isContext
                                         ? "预设提示词"
-                                        : item.date}
+                                        : `${item.date}`}
                                     </div>
 
                                    

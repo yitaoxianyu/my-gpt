@@ -5,7 +5,10 @@ import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { Path } from "../constant/constant"
 import {Avatar, EmojiAvatar} from "./others/emoji"
-
+import { MakeDirectoryOptions } from "fs"
+import { Session } from "../constant/constant"
+import { useSessionStore } from "../store/session"
+import { nanoid } from "nanoid" 
 
 
 export function MaskAvatar(props : {avatar : string}){
@@ -21,6 +24,9 @@ export function MaskItem(props : {
     }
 )
 {
+
+
+
     return (
     <div className={style["mask"]} onClick={props.onClick}>
       <MaskAvatar
@@ -39,7 +45,8 @@ export default function MaskPage() {
     
     const navigate = useNavigate();
     
-    
+    const [sessions,currentIndex] = useSessionStore((state) => [state.sessions,state.currentIndex]);
+    const lodaSession = useSessionStore((state) => state.loadSession);
     const [masks,loadMask] = useMaskStore(
         (state) => [state.masks,state.loadMask]
     );
@@ -48,7 +55,19 @@ export default function MaskPage() {
         loadMask();
     }, []);
 
-    function startChat() {
+
+
+    function startChat(mask : Mask) {
+        //构建一个新的对话
+        const  newSession : Session  = {
+            id : `${mask.name}-${nanoid().toString()}`,
+            topic : mask.name,
+            messages : [],
+            mask : mask,
+            
+        }
+
+
         navigate(Path.Chat)
     }
     return (
@@ -75,7 +94,7 @@ export default function MaskPage() {
                 <MaskItem
                     key={index}
                     mask={mask}
-                    onClick={startChat}
+                    onClick={() => {startChat(mask)}}
                 />
                 ))}
             </div>

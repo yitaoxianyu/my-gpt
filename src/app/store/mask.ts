@@ -36,13 +36,12 @@ export const useMaskStore = create<MaskState>()(
                 );
             }
             ).catch((e) => {console.log(e)});
-            
         },
    }
    )
    ,
    {name : "mask"}
 )
-  );
+);
   
     

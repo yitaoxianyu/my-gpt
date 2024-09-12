@@ -75,7 +75,7 @@ export default function ChatList(){
         {sessions.map((item,i) => (
             <ChatItem
             title={item.topic}
-            date={new Date(item.lastUpdateTime).toLocaleString()}
+            date={(localStorage.getItem(item.id))??"unknow time"}
             count={item.messages.length}
             key={item.id}
             id={item.id}

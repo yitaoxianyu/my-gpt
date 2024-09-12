@@ -24,7 +24,6 @@ export interface Mask  {
 export interface Session {
     id : string,
     topic : string,
-    lastUpdateTime : string,
     messages  : ChatMessage[],
     mask : Mask,   
 }
