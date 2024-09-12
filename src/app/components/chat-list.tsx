@@ -86,6 +86,7 @@ export default function ChatList(){
               if(sessions == emptySessions ) return ;
               navigate(Path.Chat);
               updateCurrentIndex(i);
+              //这里可以正确设置index
             }}
             onDelete={async () => {
               if (sessions.length == 1){

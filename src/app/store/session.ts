@@ -9,7 +9,7 @@ import { Mask } from "../constant/constant";
 // 定义会话状态的接口
 interface SessionState {
   sessions: Session[];
-  loadSession: () => void;
+  loadSession: () => void,
   deleteSession : (index : number) => void;
   updateCurrentIndex : (index : number) => void;
   currentIndex: number;
@@ -21,7 +21,6 @@ function createEmptySession(): Session {
   return {
     id: nanoid(),
     messages: [],
-    lastUpdateTime: Date().toString(),
     topic: "新的对话",
     mask : createEmptyMask(),  // 如果需要 mask，可以定义
   };
@@ -34,24 +33,21 @@ export const useSessionStore = create<SessionState>()(
       sessions: [createEmptySession()],
       currentIndex: 0,
       selectedIndex: 0,
-      loadSession() {
-        fetch("http://localhost:8080/session/all")
+      async loadSession() {
+          await fetch("http://localhost:8080/session/all")
           .then((res) => {
             return res.json();
           })
           .then((sessions: []) => {
             if (sessions.length > 0) {
-              set((state) => ({ sessions: sessions }));
-              for (const session of sessions ){
-                console.log(session);
-              }
+              set((state) => ({ sessions : sessions }));
             }
 
           })
           .catch((e) => {
             console.error(e);
           });
-      },
+    },
       deleteSession(index) {
         //判断是否只有一个
         if(index == get().currentIndex) set({currentIndex : 0});

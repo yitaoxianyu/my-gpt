@@ -47,6 +47,7 @@ export default function MaskPage() {
     
     const [sessions,currentIndex] = useSessionStore((state) => [state.sessions,state.currentIndex]);
     const lodaSession = useSessionStore((state) => state.loadSession);
+    const updateCurrentIndex  = useSessionStore((state) => state.updateCurrentIndex);
     const [masks,loadMask] = useMaskStore(
         (state) => [state.masks,state.loadMask]
     );
@@ -56,18 +57,49 @@ export default function MaskPage() {
     }, []);
 
 
+    async function handleNewSeesion(newSession : Session) {
+        try{
+            const response = await fetch("http://localhost:8080/session/add",{method : "post",
+                body : JSON.stringify(newSession),
+                headers : {
+                    'Content-Type': "application/json",
+                }
+            }
+        );
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+        }
+        catch(e){
+            console.log(e);
+        }
+    }
 
-    function startChat(mask : Mask) {
+
+    async function startChat(mask : Mask) {
         //构建一个新的对话
         const  newSession : Session  = {
-            id : `${mask.name}-${nanoid().toString()}`,
+            id : `${mask.name}`,
             topic : mask.name,
             messages : [],
             mask : mask,
-            
         }
+  
+        
+        //将该session上传到后端
+        await handleNewSeesion(newSession);
+  
+        //之后设置日期
+        localStorage.setItem(newSession.id,`${new Date().toLocaleDateString('zh-CN')}`);
 
+        //之后再次loadSession
+        await lodaSession();
+        
+        console.log(sessions);
+        updateCurrentIndex(sessions.length - 1);        
 
+        console.log(currentIndex);
         navigate(Path.Chat)
     }
     return (

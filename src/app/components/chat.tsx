@@ -60,9 +60,7 @@ export default function Chat() {
 
     //由早到晚进行排序
     function sortByDate(messages : ChatMessage[]){
-        messages.sort(function(a, b) {
-            return b.date < a.date ? 1 : -1
-        })
+        return [...messages].sort((a, b) => b.date < a.date ? 1 : -1);
     }
 
 
