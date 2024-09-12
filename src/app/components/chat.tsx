@@ -29,7 +29,7 @@ export default function Chat() {
 
 
     //用户打开聊天框，之后才会加载这个message
-    const [messages,updateMessage] = useMessageStore((state) => [state.messages,state.updateMessage]);
+    const [messages,updateMessage,addMessage] = useMessageStore((state) => [state.messages,state.updateMessage,state.addMessage]);
 
 
     //此处有一个bug,sessions列表不能为空。 
@@ -122,7 +122,7 @@ export default function Chat() {
 
 
           // 使用函数式更新,如果不用函数式更新的化，用户发送的信息被更新到messages中后，请求gpt中进行状态设置的messages并没有被更新。
-          updateMessage([botMessage]);
+          addMessage(botMessage);
           sortByDate(currentSession.messages);
       
         } catch (error) {
@@ -166,7 +166,7 @@ export default function Chat() {
 
         setUserInput("");//发送之后清空
 
-        updateMessage([message]);
+        addMessage(message);
         sortByDate(currentSession.messages);
 
         console.log(messages);
